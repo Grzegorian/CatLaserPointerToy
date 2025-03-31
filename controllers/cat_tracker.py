@@ -10,18 +10,11 @@ class CatTracker:
         self.last_update_time = time.time()
 
     def update(self, cat_pos):
-        """Aktualizuje pozycję kota z dodatkowymi zabezpieczeniami"""
         if cat_pos is None:
             return
 
-        # Sprawdź czy pozycja jest krotką/listą z 2 elementami
         if not isinstance(cat_pos, (tuple, list)) or len(cat_pos) != 2:
             print(f"Nieprawidłowa pozycja kota: {cat_pos}")
-            return
-
-        # Sprawdź czy wartości są liczbami
-        if not all(isinstance(coord, (int, float)) for coord in cat_pos):
-            print(f"Nieprawidłowe typy współrzędnych: {cat_pos}")
             return
 
         current_time = time.time()
@@ -30,7 +23,6 @@ class CatTracker:
             last_pos = self.position_history[-1]
             dt = current_time - self.last_update_time
             if dt > 0:
-                # Oblicz prędkość z zabezpieczeniem przed dzieleniem przez zero
                 try:
                     velocity = (
                         (cat_pos[0] - last_pos[0]) / dt,

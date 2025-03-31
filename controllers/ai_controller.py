@@ -1,7 +1,7 @@
 import numpy as np
 import random
 import time
-from config import BASE_SPEED
+from config import BASE_SPEED, MIN_DISTANCE
 
 
 class AIController:
@@ -29,24 +29,45 @@ class AIController:
 
         return self.strategy
 
+    def _maintain_safe_distance(self, cat_pos, laser_pos):
+        """Oblicza bezpieczną pozycję z zachowaniem minimalnego dystansu"""
+        cat_pos = np.array(cat_pos)
+        laser_pos = np.array(laser_pos)
+        distance = np.linalg.norm(cat_pos - laser_pos)
+
+        if distance < MIN_DISTANCE:
+            direction = laser_pos - cat_pos
+            if np.linalg.norm(direction) > 0:
+                direction = direction / np.linalg.norm(direction)
+            return cat_pos + direction * MIN_DISTANCE
+        return laser_pos
+
     def get_target_position(self, cat_pos, laser_pos, polygon_points, cat_tracker):
         if self.strategy == "escape":
-            return self._escape_strategy(cat_pos, laser_pos, polygon_points)
+            target = self._escape_strategy(cat_pos, laser_pos, polygon_points)
         elif self.strategy == "confuse":
-            return self._confuse_strategy(laser_pos)
-        return self._explore_strategy(laser_pos, cat_tracker)
+            target = self._confuse_strategy(laser_pos)
+        else:
+            target = self._explore_strategy(laser_pos, cat_tracker)
+
+        # Zastosuj wymóg minimalnej odległości
+        safe_target = self._maintain_safe_distance(cat_pos, target)
+        return safe_target
 
     def _escape_strategy(self, cat_pos, laser_pos, polygon_points):
         farthest_point = max(polygon_points,
                              key=lambda p: np.linalg.norm(np.array(p) - np.array(cat_pos)))
         direction = np.array(farthest_point) - np.array(laser_pos)
         if np.linalg.norm(direction) > 0:
-            direction = direction / np.linalg.norm(direction) * BASE_SPEED * 1.5
-        return (laser_pos[0] + direction[0], laser_pos[1] + direction[1])
+            direction = direction / np.linalg.norm(direction)
+        # Zwiększ dystans ucieczki
+        return laser_pos + direction * (BASE_SPEED * 1.5 + MIN_DISTANCE * 0.3)
 
     def _confuse_strategy(self, laser_pos):
         angle = random.uniform(0, 2 * np.pi)
-        distance = random.uniform(BASE_SPEED * 0.5, BASE_SPEED * 1.5)
+        # Zwiększ minimalną odległość w trybie confuse
+        distance = random.uniform(BASE_SPEED * 0.5 + MIN_DISTANCE * 0.2,
+                                  BASE_SPEED * 1.5 + MIN_DISTANCE * 0.3)
         return (
             laser_pos[0] + np.cos(angle) * distance,
             laser_pos[1] + np.sin(angle) * distance
