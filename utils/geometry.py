@@ -37,4 +37,8 @@ def constrain_to_polygon(point, polygon):
             min_dist = dist
             closest_point = projection
 
-    return (int(closest_point[0]), int(closest_point[1])) if closest_point else point
+    # Modified return statement to handle numpy arrays properly
+    if closest_point is not None:
+        return (int(closest_point[0]), int(closest_point[1]))
+    else:
+        return point
