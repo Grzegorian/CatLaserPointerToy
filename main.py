@@ -6,13 +6,16 @@ from config import *
 from controllers import LaserController, CatTracker, AIController
 from utils import draw_calibration_points, constrain_to_polygon
 
+from controllers.servo_controller import ServoController
+
 
 def main():
     # Inicjalizacja kamery
     cap = cv2.VideoCapture(0)
     cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
     cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
-
+    servo_control = ServoController(port='COM3')  # Dostosuj port do swojego systemu
+    servo_control.center_servos()  # Ustaw w pozycji neutralnej
     if not cap.isOpened():
         print("Błąd kamery!")
         return
@@ -60,6 +63,8 @@ def main():
         frame = cv2.resize(frame, (1280, 720))
         largest_cat = None
 
+
+
         # Tryb kalibracji
         if not calibration_complete:
             draw_calibration_points(frame, temp_points)
@@ -104,6 +109,8 @@ def main():
                 if not simulation_mode:
                     cat_tracker.update(largest_cat)
                     cv2.circle(frame, largest_cat, 15, CAT_POINT_COLOR, -1)
+                    servo1, servo2 = laser.update_servo_position(*constrained_pos, frame.shape[1], frame.shape[0])
+                    servo_control.move_servos(servo1, servo2)
 
                 laser_pos = laser.get_smoothed_position(frame.shape[1], frame.shape[0])
 
@@ -161,6 +168,23 @@ def main():
             print("Resetowano kalibrację")
         elif key == ord('q'):
             break
+
+            # W głównej pętli while, w sekcji obsługi klawiszy:
+        elif key == ord('i'):  # Strzałka w górę
+            servo_control.move_relative(0, -5)
+        elif key == ord('k'):  # Strzałka w dół
+            servo_control.move_relative(0, 5)
+        elif key == ord('j'):  # Strzałka w lewo
+            servo_control.move_relative(-5, 0)
+        elif key == ord('l'):  # Strzałka w prawo
+            servo_control.move_relative(5, 0)
+        elif key == ord('c'):  # Centrowanie
+            servo_control.center_servos()
+
+
+
+
+
 
     cap.release()
     cv2.destroyAllWindows()

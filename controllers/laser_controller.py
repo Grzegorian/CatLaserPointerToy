@@ -32,3 +32,9 @@ class LaserController:
 
     def get_position(self, frame_width, frame_height):
         return (int(self.x * frame_width), int(self.y * frame_height))
+
+    def update_servo_position(self, x, y, frame_width, frame_height):
+        """Konwertuje pozycję XY na kąty serw"""
+        servo1 = int(180 * x / frame_width)
+        servo2 = int(180 * (1 - y / frame_height))  # Odwróć oś Y
+        return servo1, servo2
