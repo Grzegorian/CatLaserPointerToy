@@ -1,10 +1,10 @@
 // WIFI_AP settings.
 const char* AP_SSID = "CatLaserToy";
-const char* AP_PWD  = "12345678";
+const char* AP_PWD  = "##########";
 
 // WIFI_STA settings.
 const char* STA_SSID = "Herbatka";
-const char* STA_PWD  = "Tea-party6969!";
+const char* STA_PWD  = "##########";
 
 // the MAC address of the device you want to ctrl.
 uint8_t broadcastAddress[] = {0x08, 0x3A, 0xF2, 0xAA, 0xAA, 0xAA};
