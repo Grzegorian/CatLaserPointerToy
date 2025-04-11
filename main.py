@@ -90,7 +90,7 @@ def main():
                                 cv2.FONT_HERSHEY_SIMPLEX, 1, SIMULATION_COLOR, 2)
                     cat_tracker.update(simulated_cat_pos)
 
-            # Tryb normalny - detekcja kota
+            # Tryb normalny-detekcja kota
             else:
                 results = model(frame, classes=15, verbose=False)
                 max_area = 0

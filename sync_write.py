@@ -26,7 +26,7 @@ else:
             termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
         return ch
 
-from scservo_sdk import *                    # Uses SCServo SDK library
+from scservo_sdk_waveshare import *                    # Uses SCServo SDK library
 
 # Control table address
 ADDR_SCS_TORQUE_ENABLE     = 40

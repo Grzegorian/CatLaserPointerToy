@@ -50,9 +50,9 @@ int MAX_ID = 20;
 
 // modeSelected.
 // set the SERIAL_FORWARDING as true to control the servos with USB.
-bool SERIAL_FORWARDING = false;
+bool SERIAL_FORWARDING = true;
 
-// OLED Screen Dispaly.
+// OLED Screen Display.
 // Row1: MAC address.
 // Row2: VCC --- IP address.
 // Row3: MODE:Leader/Follower  [AP]/[STA][RSSI]
@@ -87,7 +87,7 @@ void setup() {
   Serial.begin(115200);
   while(!Serial) {}
 
-  espNowIInit();
+  espNowInit();
 
   getMAC();
   
@@ -111,7 +111,7 @@ void setup() {
 
 
 void loop() {
-  delay(300000);
+  //delay(2000);
 
   // st.WritePosEx(1, 25, 600, 0);
   // st.WritePosEx(2, 25, 600, 0);

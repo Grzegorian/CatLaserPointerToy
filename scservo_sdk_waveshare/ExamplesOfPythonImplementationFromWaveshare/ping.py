@@ -3,11 +3,11 @@
 # *********     Ping Example      *********
 #
 #
-# Available SCServo model on this example : All models using Protocol SCS
-# This example is tested with a SCServo(STS/SMS/SCS), and an URT
-# Be sure that SCServo(STS/SMS/SCS) properties are already set as %% ID : 1 / Baudnum : 6 (Baudrate : 1000000)
+# Available SC Servo model on this example : All models using Protocol SC
+# This example is tested with a SC15/SC09 Servo, and an URT
 #
 
+import sys
 import os
 
 if os.name == 'nt':
@@ -26,15 +26,14 @@ else:
             termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
         return ch
 
-from scservo_sdk_waveshare import *                 # Uses SCServo SDK library
+sys.path.append("../../../../Downloads/SCServo_Python")
+from scservo_sdk_waveshare import *                   # Uses SC Servo SDK library
 
 # Default setting
-SCS_ID                  = 3                 # SCServo ID : 1
-BAUDRATE                = 115200            # Driver board default baudrate : 115200
+SCS_ID                  = 3                 # SC Servo ID : 1
+BAUDRATE                = 1000000           # SC Servo default baudrate : 1000000
 DEVICENAME              = 'COM3'    # Check which port is being used on your controller
                                             # ex) Windows: "COM1"   Linux: "/dev/ttyUSB0" Mac: "/dev/tty.usbserial-*"
-
-protocol_end            = 1                 # SCServo bit end(STS/SMS=0, SCS=1)
 
 # Initialize PortHandler instance
 # Set the port path
@@ -43,7 +42,7 @@ portHandler = PortHandler(DEVICENAME)
 
 # Initialize PacketHandler instance
 # Get methods and members of Protocol
-packetHandler = PacketHandler(protocol_end)
+packetHandler = scscl(portHandler)
 
 # Open port
 if portHandler.openPort():
@@ -64,15 +63,16 @@ else:
     getch()
     quit()
 
-# Try to ping the SCServo
-# Get SCServo model number
-scs_model_number, scs_comm_result, scs_error = packetHandler.ping(portHandler, SCS_ID)
+# Try to ping the SC Servo
+# Get SC Servo model number
+scs_model_number, scs_comm_result, scs_error = packetHandler.ping(SCS_ID)
 if scs_comm_result != COMM_SUCCESS:
     print("%s" % packetHandler.getTxRxResult(scs_comm_result))
-elif scs_error != 0:
-    print("%s" % packetHandler.getRxPacketError(scs_error))
 else:
-    print("[ID:%03d] ping Succeeded. SCServo model number : %d" % (SCS_ID, scs_model_number))
+    print("[ID:%03d] ping Succeeded. SC Servo model number : %d" % (SCS_ID, scs_model_number))
+if scs_error != 0:
+    print("%s" % packetHandler.getRxPacketError(scs_error))
 
 # Close port
 portHandler.closePort()
+

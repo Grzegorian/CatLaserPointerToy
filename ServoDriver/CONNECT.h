@@ -267,24 +267,24 @@ void OnDataSent(const uint8_t *mac_addr, esp_now_send_status_t status) {
 }
 
 
-void OnDataRecv(const uint8_t * mac, const uint8_t *incomingData, int len) {
-  if(DEV_ROLE == 2){
-    memcpy(&myData, incomingData, sizeof(myData));
-    myData.Spd_send = abs(myData.Spd_send);
-    if(myData.Spd_send < 50){
-      myData.Spd_send = 200;
+void OnDataRecv(const esp_now_recv_info *info, const uint8_t *incomingData, int len) {
+    const uint8_t *mac = info->src_addr;
+    if(DEV_ROLE == 2){
+        memcpy(&myData, incomingData, sizeof(myData));
+        myData.Spd_send = abs(myData.Spd_send);
+        if(myData.Spd_send < 50){
+            myData.Spd_send = 200;
+        }
+        st.WritePosEx(myData.ID_send, myData.POS_send, abs(myData.Spd_send), 0);
+
+        Serial.print("Bytes received: ");
+        Serial.println(len);
+        Serial.print("POS: ");
+        Serial.println(myData.POS_send);
+        Serial.print("SPEED: ");
+        Serial.println(abs(myData.Spd_send));
     }
-    st.WritePosEx(myData.ID_send, myData.POS_send, abs(myData.Spd_send), 0);
-
-    Serial.print("Bytes received: ");
-    Serial.println(len);
-    Serial.print("POS: ");
-    Serial.println(myData.POS_send);
-    Serial.print("SPEED: ");
-    Serial.println(abs(myData.Spd_send));
-  }
 }
-
 
 void espNowInit(){
   // Set device as a Wi-Fi Station
