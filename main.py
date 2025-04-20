@@ -1,21 +1,34 @@
 import cv2
+import logging
 import numpy as np
 from ultralytics import YOLO
 import time
 from config import *
-from controllers import LaserController, CatTracker, AIController
+from controllers import LaserController, CatTracker, AIController, ServoController
 from utils import draw_calibration_points, constrain_to_polygon
 
-from controllers.servo_controller import ServoController
 
 
 def main():
+    logging.basicConfig(level=logging.DEBUG)
+
+
+    # Inicjalizacja servo
+    servo_control = ServoController()  # Dostosuj port do swojego systemu
+    servo_control.straighten_out()  # Ustaw w pozycji neutralnej
+    servo_control.move_servos(400,980)
+    servo_control.move_servos(600,960)
+    servo_control.move_servos(400,980)
+    servo_control.move_servos(600,960)
+    servo_control.move_servos(400,980)
+    servo_control.move_servos(600,960)
+
+
+
     # Inicjalizacja kamery
     cap = cv2.VideoCapture(0)
     cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1920)
     cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 1080)
-    servo_control = ServoController(port='COM3')  # Dostosuj port do swojego systemu
-    servo_control.center_servos()  # Ustaw w pozycji neutralnej
     if not cap.isOpened():
         print("Błąd kamery!")
         return
@@ -60,7 +73,7 @@ def main():
         if not ret:
             break
 
-        frame = cv2.resize(frame, (1280, 720))
+        frame = cv2.resize(frame, (1920, 1080))
         largest_cat = None
 
 
@@ -182,13 +195,8 @@ def main():
             servo_control.center_servos()
 
 
-
-
-
-
     cap.release()
     cv2.destroyAllWindows()
-
 
 if __name__ == "__main__":
     main()

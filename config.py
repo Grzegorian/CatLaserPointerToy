@@ -15,7 +15,7 @@ MIN_CALIBRATION_POINTS = 3
 MIN_CAT_AREA = 1000
 SIMULATION_RADIUS = 25
 DEBUG_MODE = True
-LOG_LEVEL = 'INFO'  # DEBUG, INFO, WARNING, ERROR
+LOG_LEVEL = 'DEBUG'  # DEBUG, INFO, WARNING, ERROR
 # Dodaj nowy parametr
 MIN_DISTANCE = 100  # Minimalna odległość lasera od kota w pikselach
 SAFE_DISTANCE_COLOR = (255, 255, 0)  # Żółty dla wskazania bezpiecznej odległości
