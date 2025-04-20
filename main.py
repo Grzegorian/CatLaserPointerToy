@@ -12,8 +12,8 @@ from controllers.servo_controller import ServoController
 def main():
     # Inicjalizacja kamery
     cap = cv2.VideoCapture(0)
-    cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
-    cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
+    cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1920)
+    cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 1080)
     servo_control = ServoController(port='COM3')  # Dostosuj port do swojego systemu
     servo_control.center_servos()  # Ustaw w pozycji neutralnej
     if not cap.isOpened():
