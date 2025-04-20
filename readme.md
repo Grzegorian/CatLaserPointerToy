@@ -38,14 +38,7 @@ graph LR
     ESP32 -- UART --- SC09_2[Servo 2]
     Webcam --- PC
 ````
-```mermaid
-sequenceDiagram
-    Kamera->>System: Obraz wideo
-    System->>YOLO: Detekcja kota
-    YOLO->>AI: Pozycja kota
-    AI->>Serwa: Komendy ruchu
-    Serwa->>Laser: Precyzyjne pozycjonowanie
-```
+
     
 ## 🎮 Keyboard Control Reference
 
